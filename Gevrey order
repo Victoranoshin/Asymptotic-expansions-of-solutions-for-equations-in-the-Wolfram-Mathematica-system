@@ -1,8 +1,9 @@
-Clear[y, D1, D2, D3, D4, ksi, q, y, x, U, d, sum, t, equation, k]
+
 (*equation for finding exponential additions*)
-equation = Expand[Simplify[y'[x] + x^2*y[x] + y''[x]]]
-(*elements of the expansion*)
-expansion = 1/x
+equation = Expand[Simplify[!!!!!!]](*Please write your own equation instead of !!!!!*)
+expansion = !!!!! (*Please write the final sum of 
+the expansion elements for the equation instead of !!!!!*)
+
 order = 2;
 (*Finding the minimal power of t in the equation*)
 leng = (Length[CoefficientList[equation, 1/x]] - 1);
@@ -13,10 +14,8 @@ variable = x;
 function = y[x];
 
 d = CoefficientRules[equation, 
-    
-       Join[{variable, function}, 
-     
-         Table[D[function, {variable, i}], {i, 1, order}]]] /. 
+    Join[{variable, function}, 
+    Table[D[function, {variable, i}], {i, 1, order}]]] /. 
    Rule -> List;
 
 sum = 0;
@@ -27,13 +26,12 @@ For[i = 1, i <= Length[d], i++,
   sum = sum + 
    
       d[[i]][[2]]*x^d[[i]][[1]][[1]]*(D[y[x]^d[[i]][[1]][[2]], y[x]]*
-       
-           y'[x]^d[[i]][[1]][[3]]*y''[x]^d[[i]][[1]][[4]] + 
+      y'[x]^d[[i]][[1]][[3]]*y''[x]^d[[i]][[1]][[4]] + 
       y[x]^d[[i]][[1]][[2]]*D[y'[x]^d[[i]][[1]][[3]], y'[x]]*D1*
-       
-              y''[x]^d[[i]][[1]][[4]] + 
+      y''[x]^d[[i]][[1]][[4]] + 
       y[x]^d[[i]][[1]][[2]]* y'[x]^d[[i]][[1]][[3]]*
        D[y''[x]^d[[i]][[1]][[4]], y''[x]]*D2)]
+       
 sum = sum/x^leng
 
 y[x_] := expansion
