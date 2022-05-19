@@ -1,0 +1,108 @@
+(*equation for finding exponential additions*)
+equation = Expand[Simplify[!!!!!]](*Please write your own equation instead of !!!!!*)
+(*elements of the expansion*)
+expansion = !!!!! (*Please write the final sum of 
+the expansion elements for the equation instead of !!!!!*)
+
+order = 2;
+(*Finding the minimal power of t in the equation*)
+leng = (Length[CoefficientList[equation, 1/x]] - 1);
+equation = Expand[equation *x^leng];
+
+Clear[x, y]
+variable = x;
+function = y[x];
+
+d = CoefficientRules[equation, 
+    
+       Join[{variable, function}, 
+     
+         Table[D[function, {variable, i}], {i, 1, order}]]] /. 
+   Rule -> List;
+
+sum = 0;
+
+(*Frechet derivative for an equation in new variables*)
+For[i = 1, i <= Length[d], i++, 
+ 
+  sum = sum + 
+   
+      d[[i]][[2]]*x^d[[i]][[1]][[1]]*(D[y[x]^d[[i]][[1]][[2]], y[x]]*
+      y'[x]^d[[i]][[1]][[3]]*y''[x]^d[[i]][[1]][[4]] + 
+      y[x]^d[[i]][[1]][[2]]*D[y'[x]^d[[i]][[1]][[3]], y'[x]]*D1*
+      y''[x]^d[[i]][[1]][[4]] + y[x]^d[[i]][[1]][[2]]* 
+      y'[x]^d[[i]][[1]][[3]]*D[y''[x]^d[[i]][[1]][[4]], y''[x]]*D2)]
+       
+y[x_] := expansion
+Print["We subtract y in Frechet derivative: "]
+ 
+D1  = \[CapitalDelta][x]/x;
+D2 = ( \[CapitalDelta][x]^2 - x*D1)/(x^2);
+D3 = (\[CapitalDelta][x]^3 - x*D1 - 3*x^2*D2)/x^3;
+D4 = (\[CapitalDelta][x]^4 - x*D1 - 7*x^2*D2 - 6*x^3*D3)/(x^4);
+
+
+Print["Substitute D1, D2, D3, D4: "]
+sum = Expand[sum]
+
+leng = Length[CoefficientList[sum, 1/x]] - 1;
+Print["Minimum power of x in the equation = ", leng]
+equation = Expand[sum*x^leng];
+order = 0;
+Clear[x, \[CapitalDelta]]
+variable = x;
+function = \[CapitalDelta][x];
+d = CoefficientRules[equation, 
+    Join[{variable, function}, 
+     Table[D[function, {variable, i}], {i, 1, order}]]] /. 
+   Rule -> List;
+(*d=d[[1]];*)
+xlist = {};
+ylist = {};
+xylist = {};
+
+i = 1; While[i <= Length[d], xlist = Append[xlist, d[[i, 1, 2]]]; i++];
+i = 1; While[i <= Length[d], ylist = Append[ylist, -d[[i, 1, 1]]]; i++];
+i = 1; While[i <= Length[d], 
+ xylist = Append[xylist, {xlist[[i]], ylist[[i]]}]; i++];
+Print["All points of the polygon", xylist]
+
+ElementsForK = 
+ MaximalBy[xylist, 
+  First];(*finding the maximum element by the first coordinate*)
+ElementsForJ = 
+ MinimalBy[xylist, 
+  Last];(*finding the minimum element by the first coordinate*)
+Print["The most right point:"]
+vec1 = MinimalBy[Select[ xylist, #[[1]] == 1 &], Last][[1]];
+vec2 = MinimalBy[ElementsForK, Last][[1]]
+Print["The most left point:"]
+vec0 = MaximalBy[ElementsForJ, First][[1]]
+Print["The convex hull:"]
+points = Sort[DeleteDuplicates[xylist]]
+
+convexHull = ConvexHullMesh[points, PlotTheme -> "Detailed"];
+convexHullPoints = MeshCoordinates[convexHull]
+
+Show[convexHull, 
+ ListPlot[points, PlotStyle -> {Red, PointSize[Large]}]]
+tochki = {vec2, vec1, vec0};
+naklon = {vec2 - vec1, vec1 - vec0};
+
+
+Print["Gevrey order:"]
+
+pram[x_, x1_, y1_, x2_, y2_] := (x - x1)/(x2 - x1)*(y2 - y1) + y1;
+
+If[vec2 == vec0, 
+  k = Infinity,
+  If[vec2 != vec0 && vec1 == vec0 Or vec2 != vec0 && vec2 == vec1,
+   k = (vec2 - vec0)[[1]]/(vec2 - vec0)[[2]], 
+   If[vec1[[2]] >= 
+     pram[vec1[[1]], vec0[[1]], vec0[[2]], vec2[[1]], vec2[[2]]],
+    k = (vec2 - vec0)[[1]]/(vec2 - vec0)[[2]], 
+    k = {naklon[[1, 1]]/naklon[[1, 2]], 
+      naklon[[2, 1]]/naklon[[2, 2]]}]] ];
+
+
+Print["k = ", k]
